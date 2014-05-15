@@ -1,0 +1,49 @@
+nuget {
+	nuspec {
+		id = ansicolors;
+		title: ansicolors;
+		version: 1.0.0.0;
+		authors: {coapp, Rob Hoelz, Christian Bechette, Tightrope Media Systems};
+		owners: {Rob Hoelz};
+
+		licenseUrl: "http://opensource.org/licenses/MIT";
+		projectUrl: "https://github.com/Olivine-Labs/ansicolors";
+		copyright: "Copyright (c) 2009 Rob Hoelz <rob@hoelzro.net>";
+		
+		requireLicenseAcceptance: false;
+		summary: "ansicolors is a simple Lua module for printing to the console in color..";
+		releaseNotes: @"https://github.com/hoelzro/lua-term"; 
+		description: @"**NOTE**: This project has been superseded by https://github.com/hoelzro/lua-term; please use that instead of this module.";
+		tags: {native, Lua, module};
+	}
+	dependencies {
+        // This node defines any outside items which may be needed to consume this package.
+        packages : {
+            // This is a list of other NuGet packages required to use this package.
+            // Each item follows the format "<pkg_name>/<version>"
+            lua/"[5.1, 5.4)",
+        };
+    }
+	files {
+		// declare a lua collection
+		lua : {
+			// copies the whole folder tree.
+			
+			#add-all-files : Items.ansicolorsDir;
+			// set the destination in the package itself. 
+			#destination : ${build_root}\ansicolors;
+		};
+		
+		lua: {"*.lua"};
+    }
+
+    targets {
+		AfterBuild {
+			.Copy {
+				DestinationFiles = "@(ansicolorsDir->'$(TargetDir)ansicolors\%(RecursiveDir)%(Filename)%(Extension)')";
+				SourceFiles = "@(ansicolorsDir)";
+				SkipUnchangedFiles = true;
+			};
+		};
+	}
+}
