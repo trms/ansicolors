@@ -2,7 +2,7 @@ nuget {
 	nuspec {
 		id = ansicolors;
 		title: ansicolors;
-		version: 1.0.0.0;
+		version: 1.0.0.3;
 		authors: {coapp, Rob Hoelz, Christian Bechette, Tightrope Media Systems};
 		owners: {Rob Hoelz};
 
@@ -40,7 +40,7 @@ nuget {
     targets {
 		AfterBuild {
 			.Copy {
-				DestinationFiles = "@(ansicolorsDir->'$(TargetDir)ansicolors\%(RecursiveDir)%(Filename)%(Extension)')";
+				DestinationFiles = "@(ansicolorsDir->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')";
 				SourceFiles = "@(ansicolorsDir)";
 				SkipUnchangedFiles = true;
 			};
