@@ -1,4 +1,7 @@
+-- ansicolors.lua v1.0.2 (2012-08)
+
 -- Copyright (c) 2009 Rob Hoelz <rob@hoelzro.net>
+-- Copyright (c) 2011 Enrique García Cota <enrique.garcia.cota@gmail.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -18,23 +21,73 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-local pairs = pairs
-local tostring = tostring
-local setmetatable = setmetatable
-local schar = string.char
 
+<<<<<<< HEAD
 local colors = {}
-
-local colormt = {}
-
-function colormt:__tostring()
-    return self.value
+=======
+-- support detection
+local function isWindows()
+  return type(package) == 'table' and type(package.config) == 'string' and package.config:sub(1,1) == '\\'
 end
 
-function colormt:__concat(other)
-    return tostring(self) .. tostring(other)
+local supported = not isWindows()
+if isWindows() then supported = os.getenv("ANSICON") end
+
+local keys = {
+  -- reset
+  reset =      0,
+>>>>>>> upstream/master
+
+  -- misc
+  bright     = 1,
+  dim        = 2,
+  underline  = 4,
+  blink      = 5,
+  reverse    = 7,
+  hidden     = 8,
+
+  -- foreground colors
+  black     = 30,
+  red       = 31,
+  green     = 32,
+  yellow    = 33,
+  blue      = 34,
+  magenta   = 35,
+  cyan      = 36,
+  white     = 37,
+
+  -- background colors
+  blackbg   = 40,
+  redbg     = 41,
+  greenbg   = 42,
+  yellowbg  = 43,
+  bluebg    = 44,
+  magentabg = 45,
+  cyanbg    = 46,
+  whitebg   = 47
+}
+
+local escapeString = string.char(27) .. '[%dm'
+local function escapeNumber(number)
+  return escapeString:format(number)
 end
 
+local function escapeKeys(str)
+
+  if not supported then return "" end
+
+  local buffer = {}
+  local number
+  for word in str:gmatch("%w+") do
+    number = keys[word]
+    assert(number, "Unknown key: " .. word)
+    table.insert(buffer, escapeNumber(number) )
+  end
+
+  return table.concat(buffer)
+end
+
+<<<<<<< HEAD
 function colormt:__call(s)
     return self .. s .. colors.reset
 end
@@ -81,3 +134,20 @@ for c, v in pairs(colorvalues) do
 end
 
 return colors
+=======
+local function replaceCodes(str)
+  str = string.gsub(str,"(%%{(.-)})", function(_, str) return escapeKeys(str) end )
+  return str
+end
+
+-- public
+
+local function ansicolors( str )
+  str = tostring(str or '')
+
+  return replaceCodes('%{reset}' .. str .. '%{reset}')
+end
+
+
+return setmetatable({noReset = replaceCodes}, {__call = function (_, str) return ansicolors (str) end})
+>>>>>>> upstream/master
