@@ -22,9 +22,6 @@
 -- THE SOFTWARE.
 
 
-<<<<<<< HEAD
-local colors = {}
-=======
 -- support detection
 local function isWindows()
   return type(package) == 'table' and type(package.config) == 'string' and package.config:sub(1,1) == '\\'
@@ -36,7 +33,6 @@ if isWindows() then supported = os.getenv("ANSICON") end
 local keys = {
   -- reset
   reset =      0,
->>>>>>> upstream/master
 
   -- misc
   bright     = 1,
@@ -87,54 +83,6 @@ local function escapeKeys(str)
   return table.concat(buffer)
 end
 
-<<<<<<< HEAD
-function colormt:__call(s)
-    return self .. s .. colors.reset
-end
-
-local function makecolor(value)
-    return setmetatable({ value = schar(27) .. '[' .. tostring(value) .. 'm' }, colormt)
-end
-
-local colorvalues = {
-    -- attributes
-    reset      = 0,
-    clear      = 0,
-    default    = 0,
-    bright     = 1,
-    dim        = 2,
-    underscore = 4,
-    blink      = 5,
-    reverse    = 7,
-    hidden     = 8,
-
-    -- foreground
-    black   = 30,
-    red     = 31,
-    green   = 32,
-    yellow  = 33,
-    blue    = 34,
-    magenta = 35,
-    cyan    = 36,
-    white   = 37,
-
-    -- background
-    onblack   = 40,
-    onred     = 41,
-    ongreen   = 42,
-    onyellow  = 43,
-    onblue    = 44,
-    onmagenta = 45,
-    oncyan    = 46,
-    onwhite   = 47,
-}
-
-for c, v in pairs(colorvalues) do
-    colors[c] = makecolor(v)
-end
-
-return colors
-=======
 local function replaceCodes(str)
   str = string.gsub(str,"(%%{(.-)})", function(_, str) return escapeKeys(str) end )
   return str
@@ -150,4 +98,3 @@ end
 
 
 return setmetatable({noReset = replaceCodes}, {__call = function (_, str) return ansicolors (str) end})
->>>>>>> upstream/master
